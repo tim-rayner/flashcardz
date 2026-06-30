@@ -1,8 +1,13 @@
 const { withNxMetro } = require('@nx/expo');
 const { getDefaultConfig } = require('@expo/metro-config');
 const { mergeConfig } = require('metro-config');
+const path = require('path');
 
-const defaultConfig = getDefaultConfig(__dirname);
+const appRoot = __dirname;
+const appPrefix = path.relative(path.resolve(appRoot, '../..'), appRoot);
+
+const defaultConfig = getDefaultConfig(appRoot);
+const expoRewriteRequestUrl = defaultConfig.server.rewriteRequestUrl;
 const { assetExts, sourceExts } = defaultConfig.resolver;
 
 /**
@@ -19,6 +24,30 @@ const customConfig = {
   resolver: {
     assetExts: assetExts.filter((ext) => ext !== 'svg'),
     sourceExts: [...sourceExts, 'cjs', 'mjs', 'svg'],
+  },
+  server: {
+    rewriteRequestUrl: (url) => {
+      const rewritten = expoRewriteRequestUrl(url);
+
+      const match = rewritten.match(/^\/assets\/(.+?)(\?.*)?$/);
+      if (!match) {
+        return rewritten;
+      }
+
+      const assetSubPath = decodeURIComponent(match[1]);
+      if (
+        !assetSubPath.startsWith(`${appPrefix}/`) &&
+        (assetSubPath.startsWith('assets/') ||
+          assetSubPath.startsWith('./assets/'))
+      ) {
+        const fixedPath = `${appPrefix}/${assetSubPath.replace(/^\.\//, '')}`;
+        const query = match[2] ?? '';
+        const separator = query ? '&' : '?';
+        return `/assets${query}${separator}unstable_path=${encodeURIComponent(fixedPath)}`;
+      }
+
+      return rewritten;
+    },
   },
 };
 

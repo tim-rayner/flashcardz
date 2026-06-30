@@ -2,6 +2,7 @@
   "name": "@org/mobile",
   "version": "0.0.1",
   "private": true,
+  "main": "index.js",
   "scripts": {
     "eas-build-post-install": "cd ../../ && node tools/scripts/eas-build-post-install.mjs . apps/mobile"
   },
@@ -15,9 +16,9 @@
     "jest-expo": "*",
     "metro-config": "*",
     "metro-resolver": "*",
-    "react": "*",
+    "react": "19.2.0",
     "react-native": "*",
-    "react-native-svg": "*",
+    "react-native-svg": "15.15.3",
     "react-native-svg-transformer": "*",
     "react-native-web": "*"
   }

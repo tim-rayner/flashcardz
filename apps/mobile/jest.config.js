@@ -1,5 +1,4 @@
-/// <reference types="jest" />
-/// <reference types="node" />
+/** @type {import('jest').Config} */
 module.exports = {
   displayName: '@org/mobile',
   preset: 'jest-expo',
