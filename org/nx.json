@@ -1,13 +1,8 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "namedInputs": {
-    "default": [
-      "{projectRoot}/**/*",
-      "sharedGlobals"
-    ],
-    "production": [
-      "default"
-    ],
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "production": ["default"],
     "sharedGlobals": []
   },
   "plugins": [
@@ -26,6 +21,6 @@
       }
     }
   ],
-  "nxCloudId": "6a443d61574bdcad3cbc4f7b",
+  "nxCloudId": "6a443eac3d94cbed02e80804",
   "analytics": false
 }
