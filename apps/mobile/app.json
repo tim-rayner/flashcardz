@@ -1,22 +1,28 @@
 {
   "expo": {
     "name": "Mobile",
-    "slug": "@org/mobile",
+    "slug": "flashcardz",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "@org/mobile",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "owner": "timrayner20",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.timrayner20.flashcardz",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.timrayner20.flashcardz"
     },
     "web": {
       "bundler": "metro",
@@ -32,6 +38,11 @@
           "backgroundColor": "#ffffff"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "e40257df-c4be-493e-b6d0-3c80f4e78e26"
+      }
+    }
   }
 }
