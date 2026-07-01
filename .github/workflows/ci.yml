@@ -24,6 +24,10 @@ jobs:
           node-version: 24
           cache: 'npm'
 
+      # This enables task distribution via Nx Cloud.
+      # Run before npm ci so the CI run is registered even if install or later steps fail.
+      - run: npx nx start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="format:check,lint,test,build,typecheck,e2e"
+
       - run: npm ci
 
       # Install EAS CLI globally and expose it explicitly on PATH
@@ -32,12 +36,13 @@ jobs:
           echo "$(npm prefix --global)/bin" >> $GITHUB_PATH
           eas --version
 
-      # This enables task distribution via Nx Cloud
-      - run: npx nx start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="e2e"
+      - uses: nrwl/nx-set-shas@v5
 
       # Prepend any command with "nx record --" to record its logs to Nx Cloud
       - run: npx nx record -- npx nx format:check --base="remotes/origin/main"
       - run: npx nx run-many -t lint test build typecheck e2e
 
-      - run: npx nx fix-ci
-        if: always()
+      # Nx Cloud Self-Healing CI: must run even when prior steps fail
+      - name: Fix CI
+        run: npx nx fix-ci
+        if: ${{ always() }}
