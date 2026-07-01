@@ -1,0 +1,5 @@
+# Defer all sync-related schema scaffolding
+
+`app.json` already enables SQLCipher encryption and the FTS build flag for `expo-sqlite`, and sync to a backend is on the roadmap (account/subscription data always; deck content, cards, and study history only when a user opts a deck into device sync). Despite that, the initial SQLite schema (decks, cards, sessions, card_results) contains **no** sync-shaped columns — no `updated_at`, no `deleted_at` tombstones, no `dirty`/`synced_at` flags.
+
+This is deliberate: the sync protocol itself (last-write-wins vs. full-deck snapshot replace vs. something else, and how per-deck opt-in is represented) isn't designed yet. Adding sync columns now would mean guessing that shape, with a real risk of getting it wrong and having to migrate twice. The one no-regret decision kept from the prototype is using client-generated UUID `TEXT` primary keys (not autoincrement integers), which doesn't foreclose a sync design later. Everything else waits until sync is actually scoped.
