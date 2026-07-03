@@ -1,24 +1,27 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { HomeScreen } from '../features/home/HomeScreen';
+import { theme } from '../theme/theme';
+import { initSchema } from '../utils/storage/schema';
 
 export const App = () => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text} testID="heading">
-        Hello World
-      </Text>
-    </View>
-  );
+  const [isSchemaReady, setSchemaReady] = useState(false);
+
+  useEffect(() => {
+    initSchema().then(() => setSchemaReady(true));
+  }, []);
+
+  if (!isSchemaReady) {
+    return <View style={styles.container} />;
+  }
+
+  return <HomeScreen />;
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#ffffff',
-  },
-  text: {
-    fontSize: 24,
+    backgroundColor: theme.colors.neutral[50],
   },
 });
 
