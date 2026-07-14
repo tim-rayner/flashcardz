@@ -119,6 +119,21 @@ describe('OnboardStore', () => {
     );
   });
 
+  it('list() applies a WHERE clause and ordering when both are given', async () => {
+    mockDb.getAllAsync.mockResolvedValueOnce([]);
+
+    await OnboardStore.list('cards', {
+      where: { topic_id: 'topic-1' },
+      orderBy: 'created_at',
+      direction: 'DESC',
+    });
+
+    expect(mockDb.getAllAsync).toHaveBeenCalledWith(
+      'SELECT * FROM cards WHERE topic_id = ? ORDER BY created_at DESC',
+      ['topic-1'],
+    );
+  });
+
   it('translates settings.value between the SQLite string and the domain boolean', async () => {
     mockDb.getFirstAsync.mockResolvedValueOnce({ key: 'interview_mode', value: '1' });
 

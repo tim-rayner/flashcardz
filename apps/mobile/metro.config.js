@@ -51,7 +51,7 @@ const customConfig = {
   },
 };
 
-module.exports = withNxMetro(mergeConfig(defaultConfig, customConfig), {
+const nxMetroConfig = withNxMetro(mergeConfig(defaultConfig, customConfig), {
   // Change this to true to see debugging info.
   // Useful if you have issues resolving modules
   debug: false,
@@ -60,3 +60,20 @@ module.exports = withNxMetro(mergeConfig(defaultConfig, customConfig), {
   // Specify folders to watch, in addition to Nx defaults (workspace libraries and node_modules)
   watchFolders: [],
 });
+
+/**
+ * withNxMetro forces `projectRoot` to the workspace root so originModulePath
+ * stays workspace-relative (needed for Expo SDK 54+). But expo-router's
+ * babel plugin also reads `projectRoot` to resolve its app-root path
+ * (`src/app`) to an absolute path, then computes the require.context
+ * directory relative to *this* app's node_modules/expo-router - forcing it
+ * to workspace root breaks that math and makes expo-router see zero routes
+ * (silently falling back to the "Welcome to Expo" tutorial screen). Nx's
+ * own resolveRequest/nodeModulesPaths/watchFolders above already reference
+ * the workspace root directly rather than through `projectRoot`, so setting
+ * it back to this app's directory only affects the router-root
+ * calculation, not module resolution.
+ */
+nxMetroConfig.projectRoot = appRoot;
+
+module.exports = nxMetroConfig;

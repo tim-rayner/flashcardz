@@ -27,7 +27,8 @@ export async function getRow<T extends TableName>(
 }
 
 export interface ListRowsOptions<T extends TableName> {
-  orderBy: keyof TableRowMap[T] & string;
+  where?: Partial<TableRowMap[T]>;
+  orderBy?: keyof TableRowMap[T] & string;
   direction?: 'ASC' | 'DESC';
 }
 
@@ -37,10 +38,19 @@ export async function listRows<T extends TableName>(
 ): Promise<TableRowMap[T][]> {
   const db = await getStorage();
   const { name } = TABLES[table];
-  const orderClause = options
+  const whereEntries = Object.entries(options?.where ?? {});
+  const whereClause = whereEntries.length
+    ? ` WHERE ${whereEntries.map(([column]) => `${column} = ?`).join(' AND ')}`
+    : '';
+  const orderClause = options?.orderBy
     ? ` ORDER BY ${options.orderBy} ${options.direction ?? 'ASC'}`
     : '';
-  return db.getAllAsync<TableRowMap[T]>(`SELECT * FROM ${name}${orderClause}`);
+  const sql = `SELECT * FROM ${name}${whereClause}${orderClause}`;
+  if (whereEntries.length === 0) {
+    return db.getAllAsync<TableRowMap[T]>(sql);
+  }
+  const params = whereEntries.map(([, value]) => value as SQLiteBindValue);
+  return db.getAllAsync<TableRowMap[T]>(sql, params);
 }
 
 export async function upsertRow<T extends TableName>(

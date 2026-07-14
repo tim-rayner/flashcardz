@@ -1,8 +1,10 @@
 import { fireEvent, render } from '@testing-library/react-native';
+import { router } from 'expo-router';
 import { useTopics } from './hooks/useTopics';
 import { HomeScreen } from './HomeScreen';
 
 jest.mock('./hooks/useTopics', () => ({ useTopics: jest.fn() }));
+jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
 
 const mockUseTopics = useTopics as jest.Mock;
 
@@ -42,4 +44,18 @@ test('tapping the + button opens the create-topic modal and submitting calls cre
   fireEvent.press(getByTestId('create-topic-submit'));
 
   expect(createTopic).toHaveBeenCalledWith('Kanji');
+});
+
+test('tapping a topic navigates to its detail route', () => {
+  mockUseTopics.mockReturnValue({
+    topics: [{ id: 'topic-1', name: 'SOLID Principles', createdAt: 1000 }],
+    isLoading: false,
+    createTopic: jest.fn(),
+  });
+
+  const { getByTestId } = render(<HomeScreen />);
+
+  fireEvent.press(getByTestId('topic-card-topic-1'));
+
+  expect(router.push).toHaveBeenCalledWith('/topics/topic-1');
 });
