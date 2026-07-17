@@ -26,7 +26,7 @@ export default function RootLayout() {
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="topics/[id]" options={{ title: '' }} />
+      <Stack.Screen name="topics/[id]/(tabs)" options={{ title: '' }} />
     </Stack>
   );
 }

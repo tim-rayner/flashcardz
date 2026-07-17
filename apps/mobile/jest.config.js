@@ -6,6 +6,11 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   moduleNameMapper: {
     '[.]svg$': '@nx/expo/plugins/jest/svg-mock',
+    // Workspace libs (e.g. @org/game-engine) are non-buildable TS consumed
+    // via nodenext-style relative imports with explicit .js extensions;
+    // jest-expo's resolver (unlike @nx/jest's) doesn't map those back to
+    // the real .ts source files, so strip the extension here instead.
+    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
   transform: {
     '[.][jt]sx?$': [

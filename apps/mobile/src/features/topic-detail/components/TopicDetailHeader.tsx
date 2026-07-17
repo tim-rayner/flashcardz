@@ -3,24 +3,33 @@ import { theme } from '../../../theme/theme';
 
 export interface TopicDetailHeaderProps {
   onManageCards: () => void;
+  onStartGame: () => void;
+  isStartGameDisabled: boolean;
+  hasAbandonedGame?: boolean;
 }
 
-/**
- * The flashcard game screen doesn't exist yet, so "Start game" is rendered
- * disabled rather than wired to a placeholder route - see docs/adr/0001.
- */
-export function TopicDetailHeader({ onManageCards }: TopicDetailHeaderProps) {
+export function TopicDetailHeader({
+  onManageCards,
+  onStartGame,
+  isStartGameDisabled,
+  hasAbandonedGame = false,
+}: TopicDetailHeaderProps) {
   return (
     <View style={styles.container}>
       <Pressable
-        disabled
+        onPress={onStartGame}
+        disabled={isStartGameDisabled}
         accessibilityRole="button"
-        accessibilityState={{ disabled: true }}
-        accessibilityLabel="Start game"
-        testID="start-game-button"
-        style={styles.startGameButton}
+        accessibilityState={{ disabled: isStartGameDisabled }}
+        accessibilityLabel={hasAbandonedGame ? 'Resume game' : 'Start game'}
+        testID={hasAbandonedGame ? 'resume-game-button' : 'start-game-button'}
+        style={[styles.startGameButton, isStartGameDisabled && styles.startGameButtonDisabled]}
       >
-        <Text style={styles.startGameLabel}>Start game</Text>
+        <Text
+          style={[styles.startGameLabel, isStartGameDisabled && styles.startGameLabelDisabled]}
+        >
+          {hasAbandonedGame ? 'Resume game' : 'Start game'}
+        </Text>
       </Pressable>
       <Pressable
         onPress={onManageCards}
@@ -50,13 +59,19 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: theme.spacing.sm,
     borderRadius: theme.radius.pill,
-    backgroundColor: theme.colors.neutral[200],
+    backgroundColor: theme.colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  startGameButtonDisabled: {
+    backgroundColor: theme.colors.neutral[200],
   },
   startGameLabel: {
     fontSize: theme.typography.button.fontSize,
     fontWeight: theme.typography.button.fontWeight,
+    color: theme.colors.neutral[0],
+  },
+  startGameLabelDisabled: {
     color: theme.colors.neutral[400],
   },
   manageButton: {

@@ -12,6 +12,10 @@ export const CARD_STATUS_FILTERS = [
 
 export type CardStatusFilter = (typeof CARD_STATUS_FILTERS)[number];
 
+export function isCardStatusFilter(value: unknown): value is CardStatusFilter {
+  return (CARD_STATUS_FILTERS as readonly unknown[]).includes(value);
+}
+
 export const CARD_STATUS_LABELS: Record<CardStatusFilter, string> = {
   all: 'All',
   never: 'Never answered',

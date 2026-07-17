@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "@expo/metro-config": "*",
+    "@org/game-engine": "*",
+    "@react-navigation/material-top-tabs": "7.3.8",
     "@testing-library/react-native": "*",
     "expo": "*",
     "expo-constants": "*",
@@ -21,6 +23,7 @@
     "metro-resolver": "*",
     "react": "19.2.0",
     "react-native": "*",
+    "react-native-pager-view": "8.0.0",
     "react-native-safe-area-context": "*",
     "react-native-screens": "*",
     "react-native-svg": "15.15.3",

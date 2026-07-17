@@ -1,0 +1,3 @@
+# Abandoned games keep their partial card results
+
+When a user backs out of a Game before grading every Card, we keep the `card_results` rows already recorded rather than discarding them, and leave `sessions.completed_at` as `null` to mark the Game as abandoned rather than completed. The alternative — discarding everything unless the user reaches the summary screen — would throw away real self-graded judgments the user already made, and would make Card Status (which reads the *latest* `card_results` row per card) revert to a stale prior status for no good reason. The trade-off: stats/aggregation code must filter on `completed_at IS NOT NULL` when counting "games played," since an abandoned session is still a row in `sessions`.

@@ -76,4 +76,26 @@ const nxMetroConfig = withNxMetro(mergeConfig(defaultConfig, customConfig), {
  */
 nxMetroConfig.projectRoot = appRoot;
 
+/**
+ * Workspace libs (e.g. @org/game-engine) are non-buildable TS consumed via
+ * nodenext-style relative imports with explicit .js extensions. withNxMetro
+ * above unconditionally replaces resolver.resolveRequest with its own
+ * chain (default Metro resolver -> tsconfig paths -> pnpm resolver), none
+ * of which fall back from a literal *.js specifier to the real *.ts source,
+ * so wrap it here (after withNxMetro runs, so this isn't clobbered) to
+ * strip the extension and retry. Same underlying issue as jest.config.js's
+ * moduleNameMapper for the Jest side of this.
+ */
+const nxResolveRequest = nxMetroConfig.resolver.resolveRequest;
+nxMetroConfig.resolver.resolveRequest = (context, moduleName, platform) => {
+  if (/^\.{1,2}\//.test(moduleName) && moduleName.endsWith('.js')) {
+    try {
+      return nxResolveRequest(context, moduleName.slice(0, -3), platform);
+    } catch {
+      // fall through and try the original specifier below
+    }
+  }
+  return nxResolveRequest(context, moduleName, platform);
+};
+
 module.exports = nxMetroConfig;

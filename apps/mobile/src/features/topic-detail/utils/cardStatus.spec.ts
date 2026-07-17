@@ -1,4 +1,19 @@
-import { getLatestCardStatuses } from './cardStatus';
+import { getLatestCardStatuses, isCardStatusFilter } from './cardStatus';
+
+describe('isCardStatusFilter', () => {
+  it('accepts every known filter value', () => {
+    expect(isCardStatusFilter('all')).toBe(true);
+    expect(isCardStatusFilter('never')).toBe(true);
+    expect(isCardStatusFilter('correct')).toBe(true);
+    expect(isCardStatusFilter('incorrect')).toBe(true);
+    expect(isCardStatusFilter('almost')).toBe(true);
+  });
+
+  it('rejects unknown or missing values', () => {
+    expect(isCardStatusFilter('bogus')).toBe(false);
+    expect(isCardStatusFilter(undefined)).toBe(false);
+  });
+});
 
 describe('getLatestCardStatuses', () => {
   it('returns an empty map when there are no results', () => {
