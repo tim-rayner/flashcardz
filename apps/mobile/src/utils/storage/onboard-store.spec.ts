@@ -1,3 +1,4 @@
+import { getStorage } from './local-db';
 import { OnboardStore } from './onboard-store';
 
 const mockDb = {
@@ -12,6 +13,15 @@ jest.mock('expo-sqlite', () => ({
 }));
 
 describe('OnboardStore', () => {
+  // getStorage() runs migrations once, on its first call, as part of opening
+  // the singleton connection. Warm it up here (against the default mocks,
+  // before any test queues its own mockResolvedValueOnce) so a test's first
+  // real query isn't accidentally answered by the migration's own
+  // PRAGMA user_version read.
+  beforeAll(async () => {
+    await getStorage();
+  });
+
   beforeEach(() => {
     mockDb.execAsync.mockClear();
     mockDb.getFirstAsync.mockClear();

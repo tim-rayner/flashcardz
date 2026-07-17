@@ -62,6 +62,11 @@ function createFakeSqliteDb() {
       return rows;
     }),
     getFirstAsync: jest.fn(async (sql: string, params: unknown[] = []) => {
+      // getStorage() reads this to decide which migrations are pending.
+      // Report "already at the latest version" so the migration run is a
+      // no-op here - this fake db's tables/ store is this test's schema,
+      // not migration 0001's.
+      if (sql === 'PRAGMA user_version') return { user_version: 1 };
       const selectMatch = sql.match(/SELECT \* FROM (\w+)/i);
       if (!selectMatch) throw new Error(`Expected a SELECT in SQL: ${sql}`);
       const [, name] = selectMatch;

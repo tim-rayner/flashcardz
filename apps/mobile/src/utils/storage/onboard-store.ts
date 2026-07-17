@@ -73,7 +73,7 @@ function toRawKey<T extends TableName>(
 /**
  * DAL: Data Access Layer
  * Generic entry point for reading/writing local SQLite state, covering
- * every table in schema.ts (topics, cards, sessions, card_results, settings).
+ * every table defined by migrations/ (topics, cards, sessions, card_results, settings).
  * Rows are translated to/from camelCase domain types at the boundary — see
  * schemas.ts and docs/adr/0002-onboard-store-zod-translation.md.
  */

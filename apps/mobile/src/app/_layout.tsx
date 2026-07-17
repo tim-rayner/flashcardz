@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Stack } from 'expo-router';
 import { theme } from '../theme/theme';
-import { initSchema } from '../utils/storage/schema';
+import { getStorage } from '../utils/storage/local-db';
 
 export default function RootLayout() {
   const [isSchemaReady, setSchemaReady] = useState(false);
 
   useEffect(() => {
-    initSchema().then(() => setSchemaReady(true));
+    getStorage().then(() => setSchemaReady(true));
   }, []);
 
   if (!isSchemaReady) {

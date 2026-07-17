@@ -1,5 +1,5 @@
 /**
- * Row shapes and key shapes for every table in schema.ts, plus the column
+ * Row shapes and key shapes for every table defined by migrations/, plus the column
  * metadata sqlite-mutations.ts needs to build queries generically.
  */
 

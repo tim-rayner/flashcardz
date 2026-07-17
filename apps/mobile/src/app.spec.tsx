@@ -61,6 +61,12 @@ test('the root route loads the home screen once the schema initializes', async (
   renderApp();
 
   await waitFor(() => expect(screen.getByText('Your Topics')).toBeTruthy());
+  // The gate now waits on getStorage() running migration 0001 (a fresh,
+  // version-0 mock db), not the old bare initSchema() - confirm that's
+  // actually what happened, not just that the screen coincidentally rendered.
+  expect(mockDb.getFirstAsync).toHaveBeenCalledWith('PRAGMA user_version');
+  expect(mockDb.execAsync).toHaveBeenCalledWith(expect.stringContaining('CREATE TABLE topics'));
+  expect(mockDb.execAsync).toHaveBeenCalledWith('PRAGMA user_version = 1');
 });
 
 test('tapping a topic on the home screen navigates to its detail route', async () => {
