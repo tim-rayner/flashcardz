@@ -13,9 +13,25 @@
   },
   "sandbox": {
     "network": {
-      "allowedDomains": [
-        "www.google-analytics.com"
-      ]
+      "allowedDomains": ["www.google-analytics.com"]
     }
+  },
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "Bash(npx nx:*)",
+      "Bash(npm ci)",
+      "Bash(npm test:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)"
+    ],
+    "deny": ["Bash(git push --force:*)", "Bash(rm -rf:*)"]
   }
 }
