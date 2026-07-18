@@ -57,6 +57,20 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
+test('shows an error screen if the schema fails to migrate on a fresh install', async () => {
+  // Runs before any other test in this file so `db` in local-db.ts is still
+  // null (its module-level singleton is never assigned when a migration
+  // throws), giving this the fresh, version-0 db a real first boot gets.
+  mockDb.execAsync
+    .mockResolvedValueOnce(undefined) // PRAGMA foreign_keys = ON
+    .mockResolvedValueOnce(undefined) // BEGIN TRANSACTION
+    .mockRejectedValueOnce(new Error('migration failed')); // migration 0001's up()
+
+  renderApp();
+
+  await waitFor(() => expect(screen.getByTestId('schema-error-screen')).toBeTruthy());
+});
+
 test('the root route loads the home screen once the schema initializes', async () => {
   renderApp();
 
